@@ -1,0 +1,57 @@
+﻿<Window x:Class="TestTask.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestTask"
+        xmlns:viewmodel="clr-namespace:TestTask.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:ApplicationViewModel}"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"  
+        xmlns:oxy="http://oxyplot.org/wpf"
+        mc:Ignorable="d"
+        Title="Steps Tracker" Height="500" Width="950">
+
+ 
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0.8*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.1*"/>
+            <RowDefinition/>
+            <RowDefinition Height="0.1*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Список пользователей"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"/>
+        <DataGrid Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" AutoGenerateColumns="false"
+                  ItemsSource="{Binding dataForGrid}" Name="dg" SelectedItem="{Binding SelectedObject}" IsReadOnly="True">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseLeftButtonUp">
+                    <i:InvokeCommandAction Command="{Binding ChoosedPerson}" CommandParameter="{Binding SelectedItem, ElementName=dg}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Фио" Width="2.35*" Binding="{Binding Path=Fio}"/>
+                <DataGridTextColumn Header="Среднее кол-во шагов" Width="2.5*" Binding="{Binding Path=AverageSteps}"/>
+                <DataGridTextColumn Header="Макс кол-во шагов" Width="2.15*" Binding="{Binding Path=MaxSteps}"/>
+                <DataGridTextColumn Header="Мин кол-во шагов" Width="2.1*" Binding="{Binding Path=MinSteps}"/>
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="{Binding Background}"/>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+        <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+                   Text="График по выбранному пользователю" FontSize="15"/>
+        <!--<lvc:CartesianChart Grid.Row="1" Grid.Column="1"
+                        Series="{Binding SeriesCollection}">
+            
+        </lvc:CartesianChart>-->
+        <oxy:PlotView Grid.Row="1" Grid.Column="1" Model="{Binding MyModel}">
+
+        </oxy:PlotView>
+        <Button Grid.Column="1" Grid.Row="2" Height="30" Width="250"
+                Content="Сохранить данные пользователя на диск" Command="{Binding SaveInFile}"  CommandParameter="{Binding SelectedObject}"/>
+    </Grid>
+</Window>
